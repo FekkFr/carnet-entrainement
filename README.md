@@ -21,10 +21,15 @@ Les noms de menus de la console Firebase peuvent varier légèrement.
 1. Va sur <https://console.firebase.google.com> et crée un projet (Google Analytics n'est pas nécessaire).
 2. Le forfait gratuit (Spark) suffit largement pour deux personnes.
 
-### 2. Créer les deux comptes
+### 2. Créer les comptes
+
+Sur le site, on se connecte avec un **nom d'utilisateur** et un mot de passe. Firebase, lui,
+identifie chaque compte par une adresse : le site ajoute donc tout seul `@<authDomain>` derrière
+le nom d'utilisateur. Cette adresse est purement technique, aucune boîte mail n'existe derrière.
 
 1. Menu **Authentication** → **Sign-in method** → active **E-mail/Mot de passe**.
-2. Onglet **Users** → **Add user** : crée un compte pour Matteo et un pour Thelma (e-mail + mot de passe).
+2. Onglet **Users** → **Add user**. Pour le nom d'utilisateur `matteo`, l'identifiant à saisir est
+   `matteo@carnet-entrainement-14c07.firebaseapp.com` (minuscules, sans accent ni espace).
 
 Le site n'a volontairement pas de page d'inscription : seuls les comptes créés ici peuvent se connecter.
 
@@ -38,7 +43,7 @@ Ces règles font que chaque personne connectée ne lit et n'écrit que ses propr
 ### 4. Relier le site au projet
 
 1. **Project settings** (roue dentée) → **Your apps** → icône **Web** `</>` → enregistre une application.
-2. Firebase affiche un bloc `firebaseConfig`. Copie ses six valeurs dans `FIREBASE_CONFIG`, tout en haut du script de `index.html`.
+2. Firebase affiche un bloc `firebaseConfig`. Ses six valeurs vont dans `FIREBASE_CONFIG`, tout en haut du script de `index.html` (déjà fait pour ce projet).
 
 ### 5. Mettre en ligne sur GitHub Pages
 

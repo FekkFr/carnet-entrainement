@@ -189,6 +189,13 @@ var PRESETS={
 };
 var AUTH=null,UID=null,unsubs=[];
 function base(){return "users/"+UID+"/"}
+/* Firebase identifie un compte par une adresse : le nom d'utilisateur « matteo » correspond à l'identifiant technique matteo@<authDomain>. */
+function loginId(name){
+  var n=String(name||"").trim().toLowerCase();
+  if(n.indexOf("@")>=0)return n;
+  n=n.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9._-]/g,"");
+  return n+"@"+FIREBASE_CONFIG.authDomain;
+}
 var DB=null,REST=null,restTick=null,clockTick=null,toastT=null;
 var $=function(id){return document.getElementById(id)};
 
@@ -315,7 +322,7 @@ function render(){
   if(S.mode==="setup"){
     html='<h2>Configuration à terminer</h2><div class="empty"><strong>Le carnet n\'est pas encore relié à ta base Firebase.</strong><span>Ouvre <code>index.html</code>, colle la configuration de ton projet dans <code>FIREBASE_CONFIG</code> en haut du script, puis recharge la page. Les étapes sont dans le fichier README.</span></div>';
   }else if(S.mode==="login"){
-    html='<h2>Connexion</h2><p class="sub">Chaque compte a ses propres séances et son propre historique.</p><form class="stack" id="login"><label class="lab" for="lg-mail">Adresse e-mail<input class="field" id="lg-mail" type="email" autocomplete="username" required></label><label class="lab" for="lg-pass">Mot de passe<input class="field" id="lg-pass" type="password" autocomplete="current-password" required></label><button class="btn primary wide" type="submit">Se connecter</button></form>';
+    html='<h2>Connexion</h2><p class="sub">Chaque compte a ses propres séances et son propre historique.</p><form class="stack" id="login"><label class="lab" for="lg-user">Nom d\'utilisateur<input class="field" id="lg-user" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required></label><label class="lab" for="lg-pass">Mot de passe<input class="field" id="lg-pass" type="password" autocomplete="current-password" required></label><button class="btn primary wide" type="submit">Se connecter</button></form>';
   }else if(!S.loaded&&!S.active){
     html='<div class="empty"><strong>'+(S.slow?"Tes données ne répondent pas encore.":"Chargement de tes séances…")+'</strong>'+(S.slow?"<span>La page réessaie toute seule, laisse-la ouverte.</span>":"")+'</div>';
   }else if(S.view==="historique")html=viewHistory();
@@ -597,9 +604,9 @@ document.addEventListener("submit",function(ev){
   ev.preventDefault();
   if(ev.target.id!=="login"||!AUTH)return;
   var btn=ev.target.querySelector("button");btn.disabled=true;
-  AUTH.signInWithEmailAndPassword($("lg-mail").value.trim(),$("lg-pass").value).catch(function(e){
+  AUTH.signInWithEmailAndPassword(loginId($("lg-user").value),$("lg-pass").value).catch(function(e){
     btn.disabled=false;
-    toast(e&&e.code==="auth/network-request-failed"?"Pas de connexion internet.":e&&e.code==="auth/too-many-requests"?"Trop d'essais. Réessaie dans quelques minutes.":"E-mail ou mot de passe incorrect.");
+    toast(e&&e.code==="auth/network-request-failed"?"Pas de connexion internet.":e&&e.code==="auth/too-many-requests"?"Trop d'essais. Réessaie dans quelques minutes.":"Nom d'utilisateur ou mot de passe incorrect.");
   });
 });
 document.addEventListener("change",function(ev){
